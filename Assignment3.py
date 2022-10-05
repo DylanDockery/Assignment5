@@ -9,7 +9,7 @@ from socket import *
 from datetime import datetime
 import argparse
 import os
-
+serverName='TESTSERVER'
 #logs requests in Common Log Format
 def log(addr,request,code, size,userAgent):
     f=open("serverLog.txt","a")
@@ -34,12 +34,12 @@ def response(requestedResource,HTTPVersion,request,addr,userAgent):
     #attempts to locate the requested resource if succesful it returns 200 and the resource and if not 404
     try:
         file=open(requestedResource[1:],'r')
-        HTTPReponse= HTTPVersion+' 200 OK\r\n'
+        HTTPReponse= HTTPVersion+' 200 OK\r\n'+'Server: '+serverName+'\r\n'
         outputdata=[HTTPReponse]+file.readlines()
         log(addr, request, code200, str(file.seek(0,os.SEEK_END)),userAgent)
         returnMessage(outputdata)
     except:
-        HTTPReponse= HTTPVersion+' 404 Not Found\r\n'
+        HTTPReponse= HTTPVersion+' 404 Not Found\r\n'+'Server: '+serverName+'\r\n'
         file=open('error404.html','r')
         outputdata=[HTTPReponse]+file.readlines()
         log(addr, request, code404, str(file.seek(0,os.SEEK_END)),userAgent)
@@ -49,7 +49,7 @@ def response(requestedResource,HTTPVersion,request,addr,userAgent):
 #if an ivalid request is made reurtns 400 error code
 def invalidRequest(request,addr,userAgent, HTTPVersion):
     code400='400'
-    HTTPReponse= HTTPVersion+' 400 Bad Request\r\n'
+    HTTPReponse= HTTPVersion+' 400 Bad Request\r\n'+'Server: '+serverName+'\r\n'
     file=open('error400.html','r')
     outputdata=[HTTPReponse]+file.readlines()
     log(addr, request, code400,  str(file.seek(0,os.SEEK_END)),userAgent)
